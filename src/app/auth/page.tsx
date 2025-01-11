@@ -29,13 +29,14 @@ export default function Auth() {
         if (response.error) throw new Error(response.error.message);
         router.push('/');
       }
-    } catch (err: unknown) {
+    } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('An unknown error occurred.');
+        setError('An unexpected error occurred.');
       }
     }
+  };
   };
 
   return (
