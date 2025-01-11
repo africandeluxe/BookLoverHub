@@ -1,10 +1,21 @@
+'use client';
+
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 
-const AuthContext = createContext(null);
+interface User {
+  id: string;
+  email: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -13,14 +24,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('Error fetching session:', error.message);
         return;
       }
-      console.log('Fetched Session User:', data?.session?.user);
       setUser(data?.session?.user || null);
     };
 
     fetchSession();
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth State Changed:', session?.user);
       setUser(session?.user || null);
     });
 
@@ -32,4 +41,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
