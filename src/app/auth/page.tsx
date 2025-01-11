@@ -30,15 +30,17 @@ export default function Auth() {
         router.push('/');
       }
     } catch (err: unknown) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred.');
+      }
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-greenPale p-4">
-      <h1 className="text-2xl font-funnel text-orange mb-6">
-        {isSignUp ? 'Sign Up' : 'Login'}
-      </h1>
+      <h1 className="text-2xl font-funnel text-orange mb-6">{isSignUp ? 'Sign Up' : 'Login'}</h1>
       <form onSubmit={handleAuth} className="w-full max-w-sm bg-white p-6 rounded shadow-md space-y-4">
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded"/>
@@ -47,7 +49,9 @@ export default function Auth() {
           {isSignUp ? 'Sign Up' : 'Login'}
         </button>
         <button type="button" onClick={() => setIsSignUp(!isSignUp)} className="text-sm text-blue-500 w-full text-center">
-          {isSignUp ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
+          {isSignUp
+            ? 'Already have an account? Login'
+            : "Don't have an account? Sign Up"}
         </button>
       </form>
     </div>
