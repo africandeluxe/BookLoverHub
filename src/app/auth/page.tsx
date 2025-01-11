@@ -29,7 +29,7 @@ export default function Auth() {
         if (response.error) throw new Error(response.error.message);
         router.push('/');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message);
     }
   };

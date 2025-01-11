@@ -54,7 +54,7 @@ export default function CreatePost() {
         setContent('');
         router.push('/');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Unexpected Error:', err.message);
       setError('An unexpected error occurred.');
     } finally {
