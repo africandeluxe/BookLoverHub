@@ -22,16 +22,20 @@ export default function Auth() {
       let response;
       if (isSignUp) {
         response = await supabase.auth.signUp({ email, password });
-        if (response.error) throw new Error(response.error.message);
+        if (response.error) {
+          throw response.error;
+        }
         alert('Sign-up successful! Check your email to verify your account.');
       } else {
         response = await supabase.auth.signInWithPassword({ email, password });
-        if (response.error) throw new Error(response.error.message);
+        if (response.error) {
+          throw response.error;
+        }
         router.push('/');
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
+      if (err && typeof err === 'object' && 'message' in err) {
+        setError((err as { message: string }).message);
       } else {
         setError('An unexpected error occurred.');
       }
