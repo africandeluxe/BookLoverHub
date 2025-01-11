@@ -37,19 +37,40 @@ export default function Auth() {
       }
     }
   };
-  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-greenPale p-4">
       <h1 className="text-2xl font-funnel text-orange mb-6">{isSignUp ? 'Sign Up' : 'Login'}</h1>
-      <form onSubmit={handleAuth} className="w-full max-w-sm bg-white p-6 rounded shadow-md space-y-4">
+      <form
+        onSubmit={handleAuth}
+        className="w-full max-w-sm bg-white p-6 rounded shadow-md space-y-4"
+      >
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded"/>
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded"/>
-        <button type="submit" className="w-full py-2 px-4 bg-greenLight text-white rounded hover:bg-greenPale">
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+        <button
+          type="submit"
+          className="w-full py-2 px-4 bg-greenLight text-white rounded hover:bg-greenPale"
+        >
           {isSignUp ? 'Sign Up' : 'Login'}
         </button>
-        <button type="button" onClick={() => setIsSignUp(!isSignUp)} className="text-sm text-blue-500 w-full text-center">
+        <button
+          type="button"
+          onClick={() => setIsSignUp(!isSignUp)}
+          className="text-sm text-blue-500 w-full text-center"
+        >
           {isSignUp
             ? 'Already have an account? Login'
             : "Don't have an account? Sign Up"}
