@@ -51,7 +51,7 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
     try {
       setIsSubmitting(true);
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('posts')
         .update({ title, content })
         .eq('id', post.id)
@@ -65,7 +65,7 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
         alert('Post updated successfully!');
         router.push('/');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Unexpected Error:', err.message);
       setError('An unexpected error occurred.');
     } finally {
