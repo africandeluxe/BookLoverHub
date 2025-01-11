@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '../../supabase';
 
 export default function CreatePost() {
-  const auth = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
   const [title, setTitle] = useState('');
@@ -14,10 +14,10 @@ export default function CreatePost() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!auth?.user) {
+    if (!user) {
       router.push('/auth');
     }
-  }, [auth, router]);
+  }, [user, router]);
 
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +35,7 @@ export default function CreatePost() {
           title,
           content,
           slug,
-          user_id: auth?.user?.id,
+          user_id: user?.id,
         },
       ]);
 
@@ -57,9 +57,10 @@ export default function CreatePost() {
       <h1 className="text-2xl font-funnel text-orange mb-6">Create a New Post</h1>
       <form onSubmit={handleCreatePost} className="w-full max-w-md bg-white p-6 rounded shadow-md space-y-4">
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        <input type="text" placeholder="Post Title" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full p-2 border rounded" required/>
+        <input type="text"  placeholder="Post Title"  value={title} onChange={(e) => setTitle(e.target.value)}  className="w-full p-2 border rounded" required/>
         <textarea placeholder="Post Content" value={content} onChange={(e) => setContent(e.target.value)} className="w-full p-2 border rounded h-32" required/>
-        <button type="submit" className="w-full py-2 px-4 bg-greenLight text-white rounded hover:bg-greenPale">
+        <button
+          type="submit" className="w-full py-2 px-4 bg-greenLight text-white rounded hover:bg-greenPale">
           Create Post
         </button>
       </form>
