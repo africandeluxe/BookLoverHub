@@ -84,7 +84,7 @@ export default function Home() {
             <Link href={`/posts/${post.slug}`} className="mt-2 text-blue-500 underline block">Read More</Link>
             {post.user_id === session?.user?.id && (
               <div className="mt-4 flex gap-4">
-                <button onClick={() => router.push(`/edit/${post.slug}`)} className="text-blue-500 underline">Edit</button>
+                <button onClick={() => router.push(`/posts/edit/${post.slug}`)} className="text-blue-500 underline">Edit</button>
                 <button onClick={() => handleDeletePost(post.id)}className="text-red-500 underline">Delete</button>
               </div>
             )}
