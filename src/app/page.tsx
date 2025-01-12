@@ -4,10 +4,18 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Session } from '@supabase/supabase-js';
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  slug: string;
+  user_id: string;
+}
 
 export default function Home() {
-  const [posts, setPosts] = useState([]);
-  const [session, setSession] = useState(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [session, setSession] = useState<Session | null>(null);
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -51,8 +59,14 @@ export default function Home() {
         setPosts(posts.filter((post) => post.id !== postId));
         alert('Post deleted successfully.');
       }
-    } catch (err) {
-      console.error('Unexpected Error:', err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Unexpected Error:', err.message);
+        setError(err.message);
+      } else {
+        console.error('Unexpected Error:', err);
+        setError('An unexpected error occurred.');
+      }
     }
   };
 
@@ -71,7 +85,7 @@ export default function Home() {
             {post.user_id === session?.user?.id && (
               <div className="mt-4 flex gap-4">
                 <button onClick={() => router.push(`/edit/${post.slug}`)} className="text-blue-500 underline">Edit</button>
-                <button onClick={() => handleDeletePost(post.id)} className="text-red-500 underline">Delete</button>
+                <button onClick={() => handleDeletePost(post.id)}className="text-red-500 underline">Delete</button>
               </div>
             )}
           </div>

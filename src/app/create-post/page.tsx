@@ -11,7 +11,7 @@ export default function CreatePost() {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null); 
 
   useEffect(() => {
     if (!user) {
@@ -43,12 +43,17 @@ export default function CreatePost() {
         console.error('Supabase Error:', supabaseError.message);
         setError(`Error creating post: ${supabaseError.message}`);
       } else {
-        setError('');
+        setError(null);
         router.push('/');
       }
-    } catch (err: any) {
-      console.error('Unexpected Error:', err.message);
-      setError('An unexpected error occurred.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Unexpected Error:', err.message);
+        setError(err.message);
+      } else {
+        console.error('Unexpected Error:', err);
+        setError('An unexpected error occurred.');
+      }
     }
   };
 
@@ -57,12 +62,9 @@ export default function CreatePost() {
       <h1 className="text-2xl font-funnel text-orange mb-6">Create a New Post</h1>
       <form onSubmit={handleCreatePost} className="w-full max-w-md bg-white p-6 rounded shadow-md space-y-4">
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        <input type="text"  placeholder="Post Title"  value={title} onChange={(e) => setTitle(e.target.value)}  className="w-full p-2 border rounded" required/>
+        <input type="text" placeholder="Post Title" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full p-2 border rounded" required/>
         <textarea placeholder="Post Content" value={content} onChange={(e) => setContent(e.target.value)} className="w-full p-2 border rounded h-32" required/>
-        <button
-          type="submit" className="w-full py-2 px-4 bg-greenLight text-white rounded hover:bg-greenPale">
-          Create Post
-        </button>
+        <button type="submit" className="w-full py-2 px-4 bg-greenLight text-white rounded hover:bg-greenPale">Create Post</button>
       </form>
     </div>
   );

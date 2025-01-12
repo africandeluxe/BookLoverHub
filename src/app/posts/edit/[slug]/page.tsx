@@ -4,9 +4,16 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../../../supabase';
 import { useRouter } from 'next/navigation';
 
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  slug: string;
+}
+
 export default function EditPost({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter();
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState<Post | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
@@ -15,7 +22,8 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const { slug } = await params;
+        const resolvedParams = await params;
+        const { slug } = resolvedParams;
 
         const { data, error } = await supabase
           .from('posts')
@@ -26,14 +34,14 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
         if (error) {
           console.error('Error Fetching Post:', error.message);
           setError('Failed to load post. Please try again.');
-        } else {
+        } else if (data) {
           setPost(data);
           setTitle(data.title);
           setContent(data.content);
         }
       } catch (err) {
-        console.error('Unexpected Error:', err.message);
-        setError('An unexpected error occurred while loading the post.');
+        console.error('Unexpected Error:', err);
+        setError('An unexpected error occurred.');
       }
     };
 
@@ -54,8 +62,7 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
       const { error } = await supabase
         .from('posts')
         .update({ title, content })
-        .eq('id', post.id)
-        .select();
+        .eq('id', post?.id);
 
       if (error) {
         console.error('Error Updating Post:', error.message);
@@ -65,8 +72,8 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
         alert('Post updated successfully!');
         router.push('/');
       }
-    } catch (err: unknown) {
-      console.error('Unexpected Error:', err.message);
+    } catch (err) {
+      console.error('Unexpected Error:', err);
       setError('An unexpected error occurred.');
     } finally {
       setIsSubmitting(false);
@@ -93,13 +100,9 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
           <label htmlFor="content" className="block text-lg font-funnel">Content</label>
           <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} className="w-full p-2 border rounded h-32" required></textarea>
         </div>
-        <button type="submit" className={`w-full py-2 px-4 text-white rounded
-          ${
+        <button type="submit" className={`w-full py-2 px-4 text-white rounded ${
             isSubmitting ? 'bg-gray-400' : 'bg-greenLight hover:bg-greenDark'
-          }`} 
-          disabled={isSubmitting}>
-          {isSubmitting ? 'Updating...' : 'Update Post'}
-        </button>
+          }`} disabled={isSubmitting}>{isSubmitting ? 'Updating...' : 'Update Post'}</button>
       </form>
     </div>
   );
