@@ -1,5 +1,7 @@
 'use client'
 import { useState } from 'react';
+import { Session } from '@supabase/supabase-js';
+
 
 interface CommentProps {
   comment: Comment;
